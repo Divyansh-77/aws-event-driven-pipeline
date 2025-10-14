@@ -1,0 +1,23 @@
+# Ignore Terraform specific files
+# This is the "toolbox" that we should never commit.
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Ignore Python specific files
+__pycache__/
+*.pyc
+
+# Ignore build artifacts and temporary files
+*.zip
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+
+
+**Step 2: Demolish the Old, Dirty Foundation**
+Let's get rid of the old history that still has the "ghost" of the big files.
+```bash
+rm -rf .git
