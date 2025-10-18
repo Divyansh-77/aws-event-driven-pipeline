@@ -1,0 +1,43 @@
+# This is the name of our "Demolition" workflow
+name: Destroy AWS Infrastructure
+
+# This means it will only run when you manually press a "Run workflow" button.
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # THIS STEP IS NOW CORRECTED
+      # It creates the ZIP packages in the root directory before Terraform runs.
+      - name: Build Lambda ZIP Packages
+        run: |
+          # Create the zip file in the root directory from the files in src/data_processor
+          zip -j data_processor.zip src/data_processor/*
+          # Create the zip file in the root directory from the files in src/report_generator
+          zip -j report_generator.zip src/report_generator/*
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform

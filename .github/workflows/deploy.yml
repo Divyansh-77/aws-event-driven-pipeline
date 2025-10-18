@@ -1,0 +1,47 @@
+# .github/workflows/deploy.yml
+
+name: Deploy AWS Infrastructure
+
+on:
+  push:
+    branches:
+      - main  # Or your default branch name
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # STEP 1: ADD THIS STEP TO CREATE THE ZIP FILES
+      # This step was missing. It creates the zip files in the root directory.
+      - name: Build Lambda ZIP Packages
+        run: |
+          zip -j data_processor.zip src/data_processor/*
+          zip -j report_generator.zip src/report_generator/*
+
+      # STEP 2: Configure AWS Credentials using OIDC
+      - name: Configure AWS Credentials
+        # THIS IS THE FIX - Use the latest stable version v4
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }} # Make sure this secret is set in GitHub
+
+      # STEP 3: Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # STEP 4: Run Terraform commands from the terraform directory
+      - name: Terraform CI/CD
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform validate
+          terraform apply -auto-approve
