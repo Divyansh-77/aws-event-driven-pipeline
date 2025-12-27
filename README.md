@@ -123,7 +123,7 @@ Once the `deploy` workflow is successful:
 3.  Navigate into the `sales_data/` folder.
 4.  Upload the provided `sales_data.csv` file.
 5.  Navigate to the **Amazon DynamoDB** console.
-6.  Open the table named `sales-pipeline-data-table-<...>` and explore its items. The data from the CSV will appear within seconds.
+6.  Open the table named `sales-pipeline-data-table-<...>` and explore its items. The data from the CSV will appear within the seconds.
 
 ---
 
