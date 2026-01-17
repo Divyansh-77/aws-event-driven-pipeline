@@ -139,4 +139,4 @@ A `destroy` workflow has been configured for this purpose.
 2.  On the left, click on the **"Destroy AWS Infrastructure"** workflow.
 3.  Click the **"Run workflow"** dropdown button and then click the green **"Run workflow"** button.
 
-This will trigger a job that runs `terraform destroy`, safely removing all AWS resources created by this project, ensuring you pay **₹0**.
+This will trigger a job that runs `terraform destroy`, safely removing all AWS resources created by this project, ensuring you pay **₹0** .
